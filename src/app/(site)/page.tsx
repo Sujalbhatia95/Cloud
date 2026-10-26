@@ -52,20 +52,21 @@ export default function HomePage() {
 
 function Hero() {
   return (
-    <section className="relative isolate flex min-h-[620px] items-end overflow-hidden bg-navy-900 lg:min-h-[min(88svh,860px)]">
+    <section className="under-header relative isolate flex min-h-[640px] items-end overflow-hidden bg-[linear-gradient(to_bottom,var(--color-sand)_0%,var(--color-sand)_18%,var(--color-navy-900)_55%)] lg:min-h-[min(94svh,900px)]">
       <Image
         src="/demo/hero.jpg"
-        alt="Modern house with glass walls, lit at dusk (stock photograph)"
+        alt="Modern house with a garden and swimming pool on a sunny day (stock photograph)"
         fill
         priority
         sizes="100vw"
         quality={85}
         className="-z-10 object-cover object-center"
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900/95 via-navy-900/40 to-navy-900/10" aria-hidden />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-navy-900/55 via-transparent to-transparent" aria-hidden />
+      {/* Darkens only the lower part for the headline; the top stays clear so the logo sits on the photo itself.
+          The section's own colours (light top, navy below) keep the menu and headline readable if the photo fails to load. */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-900/90 from-5% via-navy-900/60 via-55% to-transparent to-85%" aria-hidden />
       <div className="container-page w-full pb-12 pt-32 lg:pb-16">
-        <div className="max-w-4xl animate-fade-up">
+        <div className="max-w-4xl animate-fade-up [text-shadow:0_1px_14px_rgb(7_15_51/0.45)]">
           <p className="flex items-center gap-4 text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-gold-100">
             <span className="h-px w-10 bg-gold" aria-hidden />
             Residential &amp; commercial property

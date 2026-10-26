@@ -11,7 +11,7 @@ real listings.
 
 | File | Used for | Pexels photo | Photographer |
 |---|---|---|---|
-| `hero.jpg` | Home page cover, social-sharing image | [4626268](https://www.pexels.com/photo/4626268/) "Modern house facade with glowing lights at dusk" | see Pexels page |
+| `hero.jpg` | Home page cover, social-sharing image | [8134849](https://www.pexels.com/photo/8134849/) "A Beautiful House with Swimming Pool Near the Garden with Green Grass" | see Pexels page |
 | `closing.jpg` | Home page closing section | [31737860](https://www.pexels.com/photo/31737860/) "Modern Luxury House at Night with Lights" | Sharath G. |
 | `villa-1.jpg` | DEMO-101 | [28652349](https://www.pexels.com/photo/28652349/) "Modern Luxury Home with Poolside View" | David Vinicius |
 | `villa-2.jpg` | DEMO-101, DEMO-112 | [17174768](https://www.pexels.com/photo/17174768/) "Stylish modern villa" | Viktoriia Kondratiuk |

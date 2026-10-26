@@ -47,7 +47,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en-IN" className={`${display.variable} ${sans.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Marks JS as available so scroll-reveal styles only apply when they can be undone. */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script
+          dangerouslySetInnerHTML={{
+            // Before first paint: enable reveal animations, and let the header sit on the home page's cover photo.
+            __html:
+              "var d=document.documentElement;d.classList.add('js');if(location.pathname==='/')d.dataset.overlay='';if(scrollY>24)d.dataset.scrolled=''",
+          }}
+        />
       </head>
       <body className="min-h-dvh flex flex-col">{children}</body>
     </html>

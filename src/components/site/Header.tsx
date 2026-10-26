@@ -1,12 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { HeaderMode } from "./HeaderMode";
 import { MobileMenu } from "./MobileMenu";
 import { NavLinks, NAV_ITEMS, StaticNavLinks } from "./NavLinks";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-stone/80 bg-ivory/95 backdrop-blur supports-[backdrop-filter]:bg-ivory/85">
+    <header className="site-header sticky top-0 z-40 border-b border-stone/80 bg-ivory/95 backdrop-blur supports-[backdrop-filter]:bg-ivory/85">
+      <Suspense fallback={null}>
+        <HeaderMode />
+      </Suspense>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-navy focus:px-4 focus:py-2 focus:text-white"

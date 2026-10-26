@@ -37,5 +37,5 @@ draw.line([(PANEL, 0), (PANEL, H)], fill=GOLD + (255,), width=3)
 out = os.path.join(ROOT, "src/app/opengraph-image.jpg")
 img.convert("RGB").save(out, quality=88, optimize=True)
 with open(os.path.join(ROOT, "src/app/opengraph-image.alt.txt"), "w") as f:
-    f.write("Shree Krishna Associate logo beside a stock photograph of a contemporary home at dusk")
+    f.write("Shree Krishna Associate logo beside a stock photograph of a modern house with a garden")
 print("wrote", out)
