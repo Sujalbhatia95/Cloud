@@ -1,6 +1,7 @@
 "use server";
 
 import { and, eq, ne, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getDb, schema } from "@/db";
 import { audit, requireAction } from "@/lib/auth/guards";
@@ -16,26 +17,29 @@ function tempPassword() {
   return `${randomToken(12).slice(0, 12)}-Ka7`;
 }
 
-export async function createUserAction(data: FormData) {
+export type TempPasswordState = { error?: string; email?: string; temp?: string; reset?: boolean };
+
+/** The temporary password is returned in the action result (never in a URL) and shown once. */
+export async function createUserAction(_prev: TempPasswordState, data: FormData): Promise<TempPasswordState> {
   const actor = await requireAction("users");
   const email = String(data.get("email") ?? "").trim().toLowerCase().slice(0, 200);
   const name = String(data.get("name") ?? "").trim().slice(0, 100);
   const role = String(data.get("role") ?? "");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || name.length < 2 || !(role in ROLES))
-    redirect(`/admin/users?error=${encodeURIComponent("Enter a valid email, a name and a role.")}`);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || name.length < 2 || !(role in ROLES)) return { error: "Enter a valid email, a name and a role." };
   const db = getDb();
   const [exists] = await db.select({ id: schema.adminUsers.id }).from(schema.adminUsers).where(eq(schema.adminUsers.email, email)).limit(1);
-  if (exists) redirect(`/admin/users?error=${encodeURIComponent("An account with that email already exists.")}`);
+  if (exists) return { error: "An account with that email already exists." };
   const pw = tempPassword();
   const [u] = await db
     .insert(schema.adminUsers)
     .values({ email, name, role, passwordHash: await hashPassword(pw), mustChangePassword: true })
     .returning({ id: schema.adminUsers.id });
   await audit(actor, "user.created", "admin_user", u.id, { email, role });
-  redirect(`/admin/users?created=${encodeURIComponent(email)}&temp=${encodeURIComponent(pw)}`);
+  revalidatePath("/admin/users");
+  return { email, temp: pw };
 }
 
-export async function resetUserPasswordAction(data: FormData) {
+export async function resetUserPasswordAction(_prev: TempPasswordState, data: FormData): Promise<TempPasswordState> {
   const actor = await requireAction("users");
   const id = String(data.get("id") ?? "");
   const pw = tempPassword();
@@ -45,10 +49,10 @@ export async function resetUserPasswordAction(data: FormData) {
     .set({ passwordHash: await hashPassword(pw), mustChangePassword: true, failedLoginCount: 0, lockedUntil: null, updatedAt: new Date() })
     .where(eq(schema.adminUsers.id, id))
     .returning({ email: schema.adminUsers.email });
-  if (!u) redirect("/admin/users?error=User+not+found");
+  if (!u) return { error: "User not found." };
   await destroyAllSessionsFor(id);
   await audit(actor, "user.password_reset", "admin_user", id);
-  redirect(`/admin/users?created=${encodeURIComponent(u.email)}&temp=${encodeURIComponent(pw)}&reset=1`);
+  return { email: u.email, temp: pw, reset: true };
 }
 
 export async function updateUserAction(data: FormData) {

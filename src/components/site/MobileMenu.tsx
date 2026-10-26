@@ -2,9 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { IconClose, IconMenu } from "@/components/ui/icons";
 
-/** Full-screen menu for small screens (independent of the banner/header height above it). */
+/**
+ * Full-screen menu for small screens. The panel is portalled to <body>: the sticky header uses
+ * backdrop-filter, which would otherwise turn it into the containing block for `position: fixed`
+ * and squeeze the menu into the header's height.
+ */
 export function MobileMenu({ items }: { items: readonly { href: string; label: string }[] }) {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -40,50 +45,54 @@ export function MobileMenu({ items }: { items: readonly { href: string; label: s
         type="button"
         className="inline-flex h-11 w-11 items-center justify-center text-navy"
         aria-expanded={open}
-        aria-controls="mobile-menu"
+        aria-controls={open ? "mobile-menu" : undefined}
         aria-label="Open menu"
         onClick={() => setOpen(true)}
       >
         <IconMenu size={26} />
       </button>
-      <div
-        id="mobile-menu"
-        ref={panelRef}
-        hidden={!open}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Site menu"
-        className="fixed inset-0 z-[60] overflow-y-auto bg-ivory"
-      >
-        <div className="container-page flex h-[68px] items-center justify-between border-b border-stone">
-          <span className="eyebrow">Menu</span>
-          <button type="button" className="inline-flex h-11 w-11 items-center justify-center text-navy" aria-label="Close menu" onClick={close}>
-            <IconClose size={26} />
-          </button>
-        </div>
-        <nav aria-label="Mobile" className="container-page py-6">
-          <ul className="divide-y divide-stone border-y border-stone">
-            {items.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-between py-4 font-display text-3xl text-navy"
-                >
-                  {item.label}
-                  <span aria-hidden className="text-gold">→</span>
+      {open
+        ? createPortal(
+            <div
+              id="mobile-menu"
+              ref={panelRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site menu"
+              className="fixed inset-0 z-[60] overflow-y-auto bg-ivory lg:hidden"
+            >
+              <div className="container-page flex h-[68px] items-center justify-between border-b border-stone">
+                <span className="eyebrow">Menu</span>
+                <button type="button" className="inline-flex h-11 w-11 items-center justify-center text-navy" aria-label="Close menu" onClick={close}>
+                  <IconClose size={26} />
+                </button>
+              </div>
+              <nav aria-label="Mobile" className="container-page py-6">
+                <ul className="divide-y divide-stone border-y border-stone">
+                  {items.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className="flex items-center justify-between py-4 font-display text-3xl text-navy"
+                      >
+                        {item.label}
+                        <span aria-hidden className="text-gold">→</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/sell" onClick={() => setOpen(false)} className="btn btn-dark mt-8 w-full">
+                  List your property
                 </Link>
-              </li>
-            ))}
-          </ul>
-          <Link href="/sell" onClick={() => setOpen(false)} className="btn btn-dark mt-8 w-full">
-            List your property
-          </Link>
-          <Link href="/contact" onClick={() => setOpen(false)} className="btn btn-outline mt-3 w-full">
-            Talk to us
-          </Link>
-        </nav>
-      </div>
+                <Link href="/contact" onClick={() => setOpen(false)} className="btn btn-outline mt-3 w-full">
+                  Talk to us
+                </Link>
+              </nav>
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }

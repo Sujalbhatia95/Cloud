@@ -24,7 +24,7 @@ test("business settings appear on the public site and replace placeholders", asy
   await page.goto("/contact");
   await expect(page.locator("#main").getByText("+91 90000 00000")).toBeVisible();
   await expect(page.getByRole("contentinfo").getByText("+91 90000 00000")).toBeVisible();
-  await expect(page.getByText("Unit 1, Test Building, Test Road, Pune, Maharashtra")).toBeVisible();
+  await expect(page.locator("#main").getByText("Unit 1, Test Building, Test Road, Pune, Maharashtra")).toBeVisible();
   await page.goto("/property/demo-101");
   await expect(page.getByText("RERA Agent Registration No. TEST-AGENT-0001 (Test Authority)").first()).toBeVisible();
   await expect(page.getByText("Test brokerage terms for sales.")).toBeVisible();

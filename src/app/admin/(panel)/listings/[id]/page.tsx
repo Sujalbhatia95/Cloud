@@ -22,8 +22,9 @@ export default async function EditListing({ params }: PageProps<"/admin/listings
         description={
           <>
             {l.isDemo ? <span className="badge badge-demo mr-2">Demo listing</span> : null}
-            Last updated {formatDateTimeIST(l.updatedAt)} via {l.source}. The same rules as spreadsheet imports apply. Note: the next spreadsheet
-            upload that contains this listing ID will overwrite these edits.
+            Last updated {formatDateTimeIST(l.updatedAt)} via {l.source}. The same rules as spreadsheet imports apply. Note: a later spreadsheet
+            upload containing this listing ID will overwrite these edits, unless that row&apos;s last_updated date is older than this edit
+            (then it is skipped and reported in the preview).
           </>
         }
         actions={<Link href={listingPath(l)} target="_blank" className="btn btn-outline btn-sm">View on website</Link>}

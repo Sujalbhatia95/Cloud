@@ -103,7 +103,8 @@ These steps take about 30 minutes. Supabase offers a Mumbai (ap-south-1) region 
    `DATABASE_CA_CERT`.
 3. **Email** — set up Resend (see [section 5](#5-email-notifications)).
 4. **Deploy** — import the repository in Vercel. Add every variable from `.env.example` under *Settings →
-   Environment Variables* (Production). `SITE_URL` must be your final `https://` domain. Deploy.
+   Environment Variables* (Production). `SITE_URL` must be your final `https://` domain — it is also read at build
+   time (page metadata, robots.txt, security headers), so redeploy after changing it. Deploy.
 5. **Domain** — add your domain in Vercel → Domains and update DNS as instructed.
 6. **Scheduled jobs** — `vercel.json` registers the two cron jobs. Vercel sends `Authorization: Bearer $CRON_SECRET`
    automatically. On Vercel's Hobby plan cron jobs can run at most once a day — either upgrade, change the
@@ -272,6 +273,13 @@ Health check for uptime monitors: `GET /api/health`.
 pnpm test               # unit tests (parsers, validation)
 pnpm test:integration   # against PostgreSQL: imports, search, enquiries + email (TEST_DATABASE_URL, default …/ska_test)
 pnpm test:e2e           # builds the site and runs Playwright browser tests (database ska_e2e, mock email server)
+```
+
+The integration tests need an empty, migrated test database (the E2E suite creates its own):
+
+```bash
+createdb ska_test
+DATABASE_URL=postgres://postgres:pgdevpass@127.0.0.1:5432/ska_test npx tsx scripts/migrate.ts
 ```
 
 The end-to-end suite uses a local mock of the Resend API, so it proves that each request is sent to the provider

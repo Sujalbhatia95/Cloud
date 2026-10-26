@@ -47,7 +47,7 @@ export function Gallery({ images, title, isDemo }: { images: string[]; title: st
           {images.map((src, i) => (
             <li key={src} className="relative aspect-[4/3] w-full shrink-0 snap-center">
               <button type="button" className="absolute inset-0" onClick={() => open(i)} aria-label={`Open photo ${i + 1} of ${count}`}>
-                <Image src={src} alt={alt(i)} fill sizes="100vw" priority={i === 0} unoptimized={!canOptimise(src)} className="object-cover" />
+                <Image src={src} alt={alt(i)} fill sizes="100vw" priority={i === 0} unoptimized={!canOptimise(src)} className="object-cover text-transparent" />
               </button>
             </li>
           ))}
@@ -73,7 +73,7 @@ export function Gallery({ images, title, isDemo }: { images: string[]; title: st
                 sizes={i === 0 ? "50vw" : "25vw"}
                 priority={i === 0}
                 unoptimized={!canOptimise(src)}
-                className="object-cover"
+                className="object-cover text-transparent"
               />
             </span>
             {i === 4 && count > 5 ? (
@@ -116,7 +116,7 @@ export function Gallery({ images, title, isDemo }: { images: string[]; title: st
               fill
               sizes="100vw"
               unoptimized={!canOptimise(images[index])}
-              className="object-contain"
+              className="object-contain text-transparent"
             />
             {count > 1 ? (
               <>

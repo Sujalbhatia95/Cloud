@@ -19,6 +19,12 @@ test("mobile menu opens and navigates", async ({ page }) => {
   await page.getByRole("button", { name: "Open menu" }).click();
   const menu = page.getByRole("navigation", { name: "Mobile" });
   await expect(menu).toBeVisible();
+  // The overlay must cover the whole screen, not be clipped to the header.
+  const viewport = page.viewportSize()!;
+  const box = (await page.getByRole("dialog", { name: "Site menu" }).boundingBox())!;
+  expect(box.y).toBeLessThanOrEqual(0);
+  expect(box.height).toBeGreaterThanOrEqual(viewport.height - 1);
+  for (const name of ["Buy", "Rent", "Commercial"]) await expect(menu.getByRole("link", { name, exact: true })).toBeInViewport();
   await menu.getByRole("link", { name: "Rent" }).click();
   await expect(page).toHaveURL(/\/rent$/);
   await expect(page.getByRole("navigation", { name: "Mobile" })).toBeHidden();

@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { and, asc, desc, eq, gte, ilike, inArray, isNull, lte, ne, or, sql, type SQL } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 import { PAGE_SIZE, PUBLIC_VISIBLE_STATUSES, type ListingStatus } from "./constants";
@@ -158,7 +159,8 @@ export async function getLocationSuggestions(includeDemo: boolean) {
 }
 
 /** Listing for a public detail page. Archived / draft listings (and demo listings outside demo mode) are not returned. */
-export async function getPublicListing(listingId: string, includeDemo: boolean) {
+/** Deduplicated per request (the property page and its metadata both need it). */
+export const getPublicListing = cache(async (listingId: string, includeDemo: boolean) => {
   await atRequestTime();
   const [row] = await getDb()
     .select()
@@ -166,7 +168,7 @@ export async function getPublicListing(listingId: string, includeDemo: boolean) 
     .where(and(eq(L.listingId, listingId.toUpperCase()), visibility(PUBLIC_VISIBLE_STATUSES, includeDemo)))
     .limit(1);
   return row ?? null;
-}
+});
 
 export async function getSimilarListings(l: PublicListing, includeDemo: boolean, limit = 3) {
   await atRequestTime();
