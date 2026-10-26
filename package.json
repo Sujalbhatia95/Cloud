@@ -6,22 +6,48 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx --env-file-if-exists=.env.local scripts/migrate.ts",
+    "db:seed": "tsx --env-file-if-exists=.env.local --conditions=react-server scripts/seed.ts",
+    "admin:create": "tsx --env-file-if-exists=.env.local --conditions=react-server scripts/create-admin.ts",
+    "templates:generate": "tsx --conditions=react-server scripts/generate-templates.ts",
+    "test": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "bash scripts/e2e.sh",
+    "test:all": "vitest run && playwright test"
   },
   "dependencies": {
+    "@e965/xlsx": "0.20.3",
+    "drizzle-orm": "0.45.4",
+    "exceljs": "^4.4.0",
     "next": "16.4.3",
+    "papaparse": "^5.7.0",
+    "pg": "^8.23.1",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.11.0",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
+    "@types/papaparse": "^5.5.2",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.5"
   },
   "packageManager": "pnpm@10.28.0"
 }

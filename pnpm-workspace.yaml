@@ -1,3 +1,5 @@
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+overrides:
+  "exceljs>uuid": "^11.1.1"
