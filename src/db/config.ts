@@ -1,6 +1,18 @@
 import type { PoolConfig } from "pg";
 
 /**
+ * The PostgreSQL connection string: DATABASE_URL, or POSTGRES_URL as set by Vercel's
+ * Postgres integrations (Neon, Supabase).
+ */
+export function databaseUrlFromEnv(): string | undefined {
+  for (const name of ["DATABASE_URL", "POSTGRES_URL"]) {
+    const value = process.env[name]?.trim();
+    if (value) return value;
+  }
+  return undefined;
+}
+
+/**
  * TLS options for hosted Postgres (Supabase, Neon, RDS...).
  * DATABASE_SSL: "disable" | "require" (verify certificate, default for non-local hosts) | "no-verify".
  * DATABASE_CA_CERT: optional PEM of the provider's CA certificate (recommended with "require").

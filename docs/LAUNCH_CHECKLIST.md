@@ -5,7 +5,7 @@ these automatically and must show **no blockers**.
 
 ## A. Hosting & configuration
 
-- [ ] PostgreSQL database created (e.g. Supabase, Mumbai region); migrations applied (`pnpm db:migrate`).
+- [ ] PostgreSQL database created (e.g. Neon via Vercel → Storage, or Supabase); migrations applied (automatic on Vercel deploys, otherwise `pnpm db:setup`).
 - [ ] Database backups enabled and a restore tested once.
 - [ ] All environment variables set in the host (see `.env.example`); `SITE_URL` is the final `https://` domain.
 - [ ] `SESSION_SECRET` and `CRON_SECRET` are long random values, different from any test values.

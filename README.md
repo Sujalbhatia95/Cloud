@@ -14,7 +14,7 @@ spreadsheets · Vitest + Playwright for tests.
 
 1. [What's included](#1-whats-included)
 2. [Run it on your computer](#2-run-it-on-your-computer)
-3. [Go live (Supabase + Vercel)](#3-go-live-supabase--vercel)
+3. [Go live (Vercel)](#3-go-live-vercel)
 4. [Database](#4-database)
 5. [Email notifications](#5-email-notifications)
 6. [Staff accounts and roles](#6-staff-accounts-and-roles)
@@ -87,31 +87,31 @@ With `EMAIL_PROVIDER=log`, notification emails are written to the terminal inste
 
 ---
 
-## 3. Go live (Supabase + Vercel)
+## 3. Go live (Vercel)
 
-These steps take about 30 minutes. Supabase offers a Mumbai (ap-south-1) region and Vercel deploys Next.js natively.
+**Step-by-step guide with no commands: [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md).**
 
-1. **Database** — create a Supabase project (region: *South Asia (Mumbai)*). In *Project → Connect*, copy the
-   **Transaction pooler** connection string (port 6543) and the database password.
-2. **Run migrations once** from your computer against that database:
-   ```bash
-   DATABASE_URL="postgres://…:6543/postgres" DATABASE_SSL=no-verify pnpm db:migrate
-   DATABASE_URL="…" DATABASE_SSL=no-verify pnpm db:seed          # optional: demo listings
-   DATABASE_URL="…" DATABASE_SSL=no-verify pnpm admin:create --email you@example.com --name "Your Name"
-   ```
-   For strict certificate checking, download Supabase's CA certificate and use `DATABASE_SSL=require` with
-   `DATABASE_CA_CERT`.
-3. **Email** — set up Resend (see [section 5](#5-email-notifications)).
-4. **Deploy** — import the repository in Vercel. Add every variable from `.env.example` under *Settings →
-   Environment Variables* (Production). `SITE_URL` must be your final `https://` domain — it is also read at build
-   time (page metadata, robots.txt, security headers), so redeploy after changing it. Deploy.
-5. **Domain** — add your domain in Vercel → Domains and update DNS as instructed.
-6. **Scheduled jobs** — `vercel.json` registers the two cron jobs, both **daily** so the deployment works on Vercel's
-   free Hobby plan (which rejects jobs that run more than once a day). Vercel sends `Authorization: Bearer $CRON_SECRET`
-   automatically. To retry failed emails more often, call the endpoint every 15 minutes from an external scheduler, or
-   upgrade to Pro and set `"schedule": "*/15 * * * *"` (see [section 10](#10-scheduled-jobs)).
-7. Sign in at `https://your-domain/admin`, change your temporary password, fill in **Business settings**, and work
-   through **Compliance checklist** until there are no blockers. Then switch **demo mode off**.
+In short: import the GitHub repository in Vercel, add `SESSION_SECRET`, `CRON_SECRET`, `ADMIN_EMAIL` and
+`ADMIN_PASSWORD`, connect a Postgres database under **Storage** (Neon), and deploy. Every deployment runs
+`pnpm vercel-build` (see `vercel.json`), which applies migrations; the first one also adds the demo listings and
+creates the first admin account, who must choose a new password at first sign-in (`scripts/setup-database.ts`).
+
+- **Database:** `DATABASE_URL` (or `POSTGRES_URL`) is set by Vercel's Storage integration. To use Supabase instead,
+  copy its **Transaction pooler** connection string (port 6543) into `DATABASE_URL` and set
+  `DATABASE_SSL=no-verify` (or `require` with `DATABASE_CA_CERT`).
+- **Address:** without `SITE_URL` the site uses its `*.vercel.app` address (the compliance checklist shows a
+  warning). After adding your own domain, set `SITE_URL=https://your-domain` and redeploy; it is also read at build
+  time (page metadata, robots.txt, security headers).
+- **Email:** set up Resend (see [section 5](#5-email-notifications)).
+- **Scheduled jobs:** `vercel.json` registers the two cron jobs, both **daily** so the deployment works on Vercel's
+  free Hobby plan (which rejects jobs that run more than once a day). Vercel sends `Authorization: Bearer $CRON_SECRET`
+  automatically. To retry failed emails more often, call the endpoint every 15 minutes from an external scheduler, or
+  upgrade to Pro and set `"schedule": "*/15 * * * *"` (see [section 10](#10-scheduled-jobs)).
+- **Before launch:** sign in at `/admin`, fill in **Business settings**, work through the **Compliance checklist**
+  until there are no blockers, then switch **demo mode off**.
+
+To prepare a database from your own computer instead: `DATABASE_URL=… pnpm db:setup` (or `db:migrate`, `db:seed`
+and `admin:create` separately).
 
 Other hosts work too (any Node.js 20+ server with `pnpm build && pnpm start`, plus a PostgreSQL database).
 

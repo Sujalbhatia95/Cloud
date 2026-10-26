@@ -1,4 +1,6 @@
 import "server-only";
+import { databaseUrlFromEnv } from "@/db/config";
+import { siteUrlFromEnv, siteUrlIsVercelDefault } from "./site-url";
 
 /**
  * Centralised, validated access to server-side environment variables.
@@ -16,12 +18,16 @@ export type EmailProviderName = "resend" | "sendgrid" | "log" | "none";
 
 export const env = {
   get databaseUrl(): string {
-    const url = read("DATABASE_URL");
+    const url = databaseUrlFromEnv();
     if (!url) throw new Error("DATABASE_URL is not set. See README → Database setup.");
     return url;
   },
   get siteUrl(): string {
-    return (read("SITE_URL") ?? "http://localhost:3000").replace(/\/+$/, "");
+    return siteUrlFromEnv();
+  },
+  /** SITE_URL is not set and the site is using Vercel's default *.vercel.app domain. */
+  get siteUrlIsVercelDefault(): boolean {
+    return siteUrlIsVercelDefault();
   },
   get isProduction(): boolean {
     return process.env.NODE_ENV === "production";

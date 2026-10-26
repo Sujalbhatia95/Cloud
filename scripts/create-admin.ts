@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../src/db/schema";
-import { poolConfigFromEnv } from "../src/db/config";
+import { databaseUrlFromEnv, poolConfigFromEnv } from "../src/db/config";
 import { hashPassword, passwordProblems } from "../src/lib/auth/password";
 
 function arg(name: string): string | undefined {
@@ -28,7 +28,7 @@ async function main() {
     if (problems.length) throw new Error(`Password rejected: ${problems.join(" ")}`);
   }
   const password = given ?? `${randomBytes(12).toString("base64url")}-Sk9`;
-  const url = process.env.DATABASE_URL;
+  const url = databaseUrlFromEnv();
   if (!url) throw new Error("DATABASE_URL is not set");
   const pool = new Pool({ ...poolConfigFromEnv(url), max: 1 });
   const db = drizzle(pool, { schema });

@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
+import { siteUrlFromEnv } from "./src/lib/site-url";
 
 const isDev = process.env.NODE_ENV !== "production";
 /** HTTPS-only protections are enabled when the site is served over https (always in real deployments). */
-const isHttps = (process.env.SITE_URL ?? "").startsWith("https://");
+const isHttps = siteUrlFromEnv().startsWith("https://");
 
 /**
  * Hosts whose images may be optimised (resized / converted to WebP/AVIF) by Next.js.

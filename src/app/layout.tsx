@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { siteUrlFromEnv } from "@/lib/site-url";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
@@ -16,7 +17,7 @@ const sans = Manrope({
   display: "swap",
 });
 
-const siteUrl = (process.env.SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const siteUrl = siteUrlFromEnv();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

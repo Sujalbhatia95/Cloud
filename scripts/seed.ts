@@ -4,11 +4,11 @@
  * Safe to run repeatedly: demo listings are upserted by listing_id; real listings are never touched.
  * Usage: pnpm db:seed
  */
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import { sql } from "drizzle-orm";
 import { Pool } from "pg";
 import * as schema from "../src/db/schema";
-import { poolConfigFromEnv } from "../src/db/config";
+import { databaseUrlFromEnv, poolConfigFromEnv } from "../src/db/config";
 import { contentHash, validateListingRow } from "../src/lib/listings/validate";
 import type { ListingFieldKey } from "../src/lib/listings/fields";
 
@@ -123,25 +123,30 @@ export const DEMO_LISTINGS: (Row & { daysAgo: number })[] = [
   },
 ];
 
+/** Inserts default settings (if missing) and upserts the demo listings. Returns how many demo listings were written. */
+export async function seedDemoData(db: NodePgDatabase<typeof schema>): Promise<number> {
+  await db.insert(schema.siteSettings).values({ id: 1, data: { demoMode: true }, updatedBy: "seed" }).onConflictDoNothing();
+  let n = 0;
+  for (const { daysAgo, ...raw } of DEMO_LISTINGS) {
+    const v = validateListingRow(raw, new Date(), { allowDemoIds: true });
+    if (!v.listing) throw new Error(`Demo listing ${raw.listing_id} is invalid: ${v.errors.join("; ")}`);
+    const created = new Date(Date.now() - daysAgo * 86_400_000);
+    const values = { ...v.listing, contentHash: contentHash(v.listing), isDemo: true, source: "seed", createdAt: created, updatedAt: created };
+    await db
+      .insert(schema.listings)
+      .values(values)
+      .onConflictDoUpdate({ target: schema.listings.listingId, set: { ...values }, setWhere: sql`${schema.listings.isDemo} = true` });
+    n++;
+  }
+  return n;
+}
+
 async function main() {
-  const url = process.env.DATABASE_URL;
+  const url = databaseUrlFromEnv();
   if (!url) throw new Error("DATABASE_URL is not set");
   const pool = new Pool({ ...poolConfigFromEnv(url), max: 2 });
-  const db = drizzle(pool, { schema });
   try {
-    await db.insert(schema.siteSettings).values({ id: 1, data: { demoMode: true }, updatedBy: "seed" }).onConflictDoNothing();
-    let n = 0;
-    for (const { daysAgo, ...raw } of DEMO_LISTINGS) {
-      const v = validateListingRow(raw, new Date(), { allowDemoIds: true });
-      if (!v.listing) throw new Error(`Demo listing ${raw.listing_id} is invalid: ${v.errors.join("; ")}`);
-      const created = new Date(Date.now() - daysAgo * 86_400_000);
-      const values = { ...v.listing, contentHash: contentHash(v.listing), isDemo: true, source: "seed", createdAt: created, updatedAt: created };
-      await db
-        .insert(schema.listings)
-        .values(values)
-        .onConflictDoUpdate({ target: schema.listings.listingId, set: { ...values }, setWhere: sql`${schema.listings.isDemo} = true` });
-      n++;
-    }
+    const n = await seedDemoData(drizzle(pool, { schema }));
     console.log(`✓ Seeded settings and ${n} demo listings (all marked DEMO).`);
   } finally {
     await pool.end();

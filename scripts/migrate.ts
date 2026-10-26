@@ -5,10 +5,10 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
-import { poolConfigFromEnv } from "../src/db/config";
+import { databaseUrlFromEnv, poolConfigFromEnv } from "../src/db/config";
 
 async function main() {
-  const url = process.env.DATABASE_URL;
+  const url = databaseUrlFromEnv();
   if (!url) throw new Error("DATABASE_URL is not set");
   const pool = new Pool({ ...poolConfigFromEnv(url), max: 1 });
   try {

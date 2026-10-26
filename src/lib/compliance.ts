@@ -150,8 +150,15 @@ export async function runAutoChecks(): Promise<AutoCheck[]> {
     key: "site_url",
     group: "Technical",
     title: "SITE_URL is your https domain",
-    level: env.siteUrl.startsWith("https://") && !/localhost|127\.0\.0\.1/.test(env.siteUrl) ? "ok" : "blocker",
-    detail: env.siteUrl,
+    level:
+      !env.siteUrl.startsWith("https://") || /localhost|127\.0\.0\.1/.test(env.siteUrl)
+        ? "blocker"
+        : env.siteUrlIsVercelDefault
+          ? "warning"
+          : "ok",
+    detail: env.siteUrlIsVercelDefault
+      ? `${env.siteUrl} (Vercel's default address). Set SITE_URL once you connect your own domain.`
+      : env.siteUrl,
   });
   add({
     key: "session_secret",
