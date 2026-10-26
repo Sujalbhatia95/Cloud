@@ -60,6 +60,11 @@ test("submissions faster than a human are rejected (anti-spam)", async ({ page }
   const email = `bot+${Date.now()}@example.com`;
   await page.goto("/property/demo-102");
   const form = await fillShowing(page, email);
+  // Swap in a token issued a moment ago, so the submission is "too fast" however long the page took to load.
+  const html = await (await page.request.get(page.url())).text(); // canonical address (the short one redirects)
+  const fresh = html.match(/name="form_token" value="([^"]+)"/)?.[1];
+  expect(fresh).toBeTruthy();
+  await form.locator('input[name="form_token"]').evaluate((el, v) => ((el as HTMLInputElement).value = v), fresh!);
   await form.getByRole("button", { name: "Request a showing" }).click();
   await expect(form.getByRole("alert").first()).toContainText(/quick/i);
   expect((await db().query("select 1 from showing_requests where email = $1", [email])).rows).toHaveLength(0);

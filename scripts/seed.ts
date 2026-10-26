@@ -1,6 +1,6 @@
 /**
  * Seeds default settings and clearly-labelled DEMO listings (IDs start with "DEMO-", is_demo = true).
- * Demo images are original computer-generated renders in /public/demo (see scripts/render).
+ * Demo images in /public/demo are licensed stock photographs (see docs/IMAGE_CREDITS.md).
  * Safe to run repeatedly: demo listings are upserted by listing_id; real listings are never touched.
  * Usage: pnpm db:seed
  */
@@ -12,7 +12,7 @@ import { poolConfigFromEnv } from "../src/db/config";
 import { contentHash, validateListingRow } from "../src/lib/listings/validate";
 import type { ListingFieldKey } from "../src/lib/listings/fields";
 
-const NOTE = "DEMO LISTING — this is a fictional sample property created to demonstrate the website. The price, location and details are not real, and the images are computer-generated illustrations.";
+const NOTE = "DEMO LISTING — this is a fictional sample property created to demonstrate the website. The price, location and details are not real, and the photos are stock photographs that do not show this property.";
 
 type Row = Partial<Record<ListingFieldKey, string>>;
 const img = (...names: string[]) => names.map((n) => `/demo/${n}.jpg`).join(" | ");

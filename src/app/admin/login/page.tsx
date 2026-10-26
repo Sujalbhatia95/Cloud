@@ -11,7 +11,7 @@ export default function LoginPage({ searchParams }: PageProps<"/admin/login">) {
     <main className="flex min-h-dvh items-center justify-center bg-sand px-4 py-16">
       <div className="w-full max-w-sm">
         <Link href="/" className="mx-auto mb-8 block w-fit" aria-label="Back to the website">
-          <Image src="/brand/logo.png" alt="Shree Krishna Associate" width={875} height={565} priority sizes="120px" className="h-20 w-auto mix-blend-multiply" />
+          <Image src="/brand/logo-transparent.png" alt="Shree Krishna Associate" width={875} height={565} priority sizes="140px" className="h-20 w-auto" />
         </Link>
         <div className="bg-white p-8 shadow-[var(--shadow-lift)]">
           <h1 className="font-display text-3xl text-navy">Staff sign in</h1>

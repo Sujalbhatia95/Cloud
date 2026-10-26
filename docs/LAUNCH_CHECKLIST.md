@@ -59,7 +59,7 @@ these automatically and must show **no blockers**.
 
 - [ ] Admin → Business settings → **Turn demo mode off**.
 - [ ] Optionally **Delete all demo listings**.
-- [ ] Replace `public/demo/hero.jpg` with your own licensed photograph if you prefer a real photo.
+- [ ] The home-page photos (`public/demo/hero.jpg`, `closing.jpg`) are Pexels stock photos (see `docs/IMAGE_CREDITS.md`). Replace them with your own photographs if you prefer, then run `python3 scripts/make_og.py`.
 
 ## H. Final checks
 

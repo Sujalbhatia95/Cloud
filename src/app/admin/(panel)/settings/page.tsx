@@ -110,7 +110,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/s
       <section id="demo" className="mt-10 scroll-mt-6">
         <Card title="Demo mode">
           <p className="text-sm">
-            Demo mode is <strong>{s.demoMode ? "ON" : "OFF"}</strong>. When on, demo listings (marked DEMO, with computer-generated images) and a demo banner
+            Demo mode is <strong>{s.demoMode ? "ON" : "OFF"}</strong>. When on, demo listings (marked DEMO, illustrated with stock photographs) and a demo banner
             are shown publicly. Turn it off before launch. {demo} demo listing(s) are in the database.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">

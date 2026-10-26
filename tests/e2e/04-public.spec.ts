@@ -6,10 +6,10 @@ import { db, emails, expect, humanPause, login, test } from "./fixtures";
 
 test("home page: hero search, featured, locations, recent listings and seller section", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Homes chosen with");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Exceptional homes");
   await expect(page.getByRole("note").first()).toContainText("Demo mode");
-  await expect(page.getByRole("heading", { name: "Properties we're proud to present" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Find your neighbourhood" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "The Collection" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Where we work" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Recently added" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Thinking of selling or letting your property?" })).toBeVisible();
   await expect(page.getByText("Demo listing").first()).toBeVisible();

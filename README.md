@@ -106,9 +106,10 @@ These steps take about 30 minutes. Supabase offers a Mumbai (ap-south-1) region 
    Environment Variables* (Production). `SITE_URL` must be your final `https://` domain — it is also read at build
    time (page metadata, robots.txt, security headers), so redeploy after changing it. Deploy.
 5. **Domain** — add your domain in Vercel → Domains and update DNS as instructed.
-6. **Scheduled jobs** — `vercel.json` registers the two cron jobs. Vercel sends `Authorization: Bearer $CRON_SECRET`
-   automatically. On Vercel's Hobby plan cron jobs can run at most once a day — either upgrade, change the
-   email-retry schedule to daily, or call the endpoint from an external scheduler (see [section 10](#10-scheduled-jobs)).
+6. **Scheduled jobs** — `vercel.json` registers the two cron jobs, both **daily** so the deployment works on Vercel's
+   free Hobby plan (which rejects jobs that run more than once a day). Vercel sends `Authorization: Bearer $CRON_SECRET`
+   automatically. To retry failed emails more often, call the endpoint every 15 minutes from an external scheduler, or
+   upgrade to Pro and set `"schedule": "*/15 * * * *"` (see [section 10](#10-scheduled-jobs)).
 7. Sign in at `https://your-domain/admin`, change your temporary password, fill in **Business settings**, and work
    through **Compliance checklist** until there are no blockers. Then switch **demo mode off**.
 
@@ -213,10 +214,12 @@ estimate calculator never uses them. A site-wide banner explains demo mode.
 **Before launch:** Admin → Business settings → Demo mode → *Turn demo mode off* (hides all demo content), and
 optionally *Delete all demo listings*.
 
-The demo images in `public/demo/` are **original computer-generated renders created for this project** with Blender
-(scripts in `scripts/render/`). They contain no third-party photographs, so there is no licence to clear. They are
-captioned as illustrative CGI. To re-render: `python -m pip install bpy==5.2.3` then
-`BLENDER_PYTHON=python scripts/render/render_all.sh`. Replace `public/demo/hero.jpg` to change the home-page hero.
+The demo images in `public/demo/` are **stock photographs from Pexels**, used under the
+[Pexels License](https://www.pexels.com/license/) (free for commercial use, no attribution required). Each one is
+listed with its source in [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md). They do not show the demo properties, and
+the site says so on every demo listing; the home-page hero and closing photos are captioned as stock photographs.
+Replace `public/demo/hero.jpg` (and `closing.jpg`) to change the home-page photos, then run
+`python3 scripts/make_og.py` to rebuild the social-sharing image.
 
 Use only photographs you own or are licensed to use for real listings.
 
@@ -241,7 +244,7 @@ Read **[docs/COMPLIANCE_NOTES.md](docs/COMPLIANCE_NOTES.md)** and work through *
 
 | Endpoint | Purpose | Suggested schedule |
 |---|---|---|
-| `GET /api/cron/email-retry` | Retries failed notification emails | Every 15 minutes |
+| `GET /api/cron/email-retry` | Retries failed notification emails | Every 15 minutes if you can (daily in `vercel.json` for the free plan) |
 | `GET /api/cron/maintenance` | Deletes enquiries older than the retention period, expired sessions, old rate-limit rows | Daily |
 
 Both require the header `Authorization: Bearer <CRON_SECRET>`. External scheduler example:
@@ -301,7 +304,7 @@ src/lib/import/        file parsing, zip guard, column mapping, preview, transac
 src/lib/auth/          passwords, sessions, roles, guards     src/lib/email/  provider, templates, outbox
 src/lib/forms/         validation schemas, spam checks, rate limits
 src/lib/content/       default legal page drafts              src/lib/compliance.ts  launch checklist
-scripts/               migrate, seed, create-admin, generate-templates, render/ (Blender)
+scripts/               migrate, seed, create-admin, generate-templates, make_og.py (sharing image)
 tests/                 unit, integration, e2e (Playwright)    docs/   guides + templates
 ```
 

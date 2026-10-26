@@ -112,8 +112,8 @@ async function PropertyDetail({ params }: { params: Promise<Params> }) {
           <div role="note" className="mt-4 flex gap-3 border border-amber-300 bg-demo-50 p-4 text-sm text-demo">
             <IconAlert size={20} className="mt-0.5 shrink-0" />
             <p>
-              <strong>Demo listing — not a real property.</strong> This sample shows how listings will look. Images are computer-generated
-              illustrations; the price, location and details are fictional. Showing requests for demo listings are delivered for testing only.
+              <strong>Demo listing — not a real property.</strong> This sample shows how listings will look. The photos are licensed stock
+              photographs, not pictures of this property; the price, location and details are fictional. Showing requests for demo listings are delivered for testing only.
             </p>
           </div>
         ) : null}

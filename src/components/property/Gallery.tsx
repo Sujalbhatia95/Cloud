@@ -9,7 +9,7 @@ export function Gallery({ images, title, isDemo }: { images: string[]; title: st
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [index, setIndex] = useState(0);
   const count = images.length;
-  const alt = (i: number) => `${title} — photo ${i + 1} of ${count}${isDemo ? " (computer-generated demo image)" : ""}`;
+  const alt = (i: number) => `${title} — photo ${i + 1} of ${count}${isDemo ? " (demo listing, stock photograph)" : ""}`;
 
   const open = (i: number) => {
     setIndex(i);

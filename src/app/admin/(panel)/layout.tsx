@@ -32,9 +32,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
       <aside className="bg-navy-900 text-white lg:sticky lg:top-0 lg:h-dvh lg:w-64 lg:shrink-0 lg:overflow-y-auto">
         <div className="flex items-center justify-between gap-3 px-5 py-4 lg:block">
           <Link href="/admin" className="flex items-center gap-3">
-            <span className="rounded-sm bg-white p-1.5">
-              <Image src="/brand/mark.png" alt="" width={772} height={772} className="h-8 w-8" sizes="32px" />
-            </span>
+            <Image src="/brand/mark-transparent.png" alt="" width={772} height={772} className="h-10 w-10" sizes="40px" />
             <span className="text-sm font-semibold leading-tight">
               Shree Krishna
               <span className="block text-[0.65rem] uppercase tracking-[0.2em] text-white/60">Admin</span>

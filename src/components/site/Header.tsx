@@ -16,13 +16,13 @@ export function SiteHeader() {
       <div className="container-page flex h-[68px] items-center justify-between gap-6 lg:h-[78px]">
         <Link href="/" className="shrink-0" aria-label="Shree Krishna Associate — home">
           <Image
-            src="/brand/logo.png"
+            src="/brand/logo-transparent.png"
             alt="Shree Krishna Associate"
             width={875}
             height={565}
             priority
             sizes="96px"
-            className="h-[50px] w-auto mix-blend-multiply lg:h-[60px]"
+            className="h-[50px] w-auto lg:h-[60px]"
           />
         </Link>
         <nav aria-label="Main" className="hidden lg:block">

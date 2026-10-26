@@ -173,7 +173,7 @@ The estimate calculator shows (a) a range based on verified comparable transacti
 
 ## Demonstration content
 
-While demo mode is switched on, listings marked **DEMO** are fictional examples and their images are computer-generated illustrations created for this website. They are not properties available for sale or rent.
+While demo mode is switched on, listings marked **DEMO** are fictional examples and their photos are licensed stock photographs that do not show the advertised property. They are not properties available for sale or rent.
 
 ## Complaints
 
